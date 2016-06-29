@@ -67,26 +67,27 @@ def CheckRateLimit():
 	
 	r = api.request('application/rate_limit_status').json()
 
-	for res_family in r['resources']:
-		for res in r['resources'][res_family]:
-			limit = r['resources'][res_family][res]['limit']
-			remaining = r['resources'][res_family][res]['remaining']
-			percent = float(remaining)/float(limit)*100
+        if 'resources' in r:
+                for res_family in r['resources']:
+                        for res in r['resources'][res_family]:
+                                limit = r['resources'][res_family][res]['limit']
+                                remaining = r['resources'][res_family][res]['remaining']
+                                percent = float(remaining)/float(limit)*100
 
-			if res == "/search/tweets":
-				ratelimit_search=[limit,remaining,percent]
+                                if res == "/search/tweets":
+                                        ratelimit_search=[limit,remaining,percent]
 
-			if res == "/application/rate_limit_status":
-				ratelimit=[limit,remaining,percent]
+                                if res == "/application/rate_limit_status":
+                                        ratelimit=[limit,remaining,percent]
 
-			#print(res_family + " -> " + res + ": " + str(percent))
-			if percent < 5.0:
-				LogAndPrint(res_family + " -> " + res + ": " + str(percent) + "  !!! <5% Emergency exit !!!")				
-				sys.exit(res_family + " -> " + res + ": " + str(percent) + "  !!! <5% Emergency exit !!!")
-			elif percent < 30.0:
-				LogAndPrint(res_family + " -> " + res + ": " + str(percent) + "  !!! <30% alert !!!")				
-			elif percent < 70.0:
-				print(res_family + " -> " + res + ": " + str(percent))
+                                #print(res_family + " -> " + res + ": " + str(percent))
+                                if percent < 5.0:
+                                        LogAndPrint(res_family + " -> " + res + ": " + str(percent) + "  !!! <5% Emergency exit !!!")				
+                                        sys.exit(res_family + " -> " + res + ": " + str(percent) + "  !!! <5% Emergency exit !!!")
+                                elif percent < 30.0:
+                                        LogAndPrint(res_family + " -> " + res + ": " + str(percent) + "  !!! <30% alert !!!")				
+                                elif percent < 70.0:
+                                        print(res_family + " -> " + res + ": " + str(percent))
 
 
 # Update the Retweet queue (this prevents too many retweets happening at once.)
